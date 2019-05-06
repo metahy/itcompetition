@@ -1,5 +1,7 @@
 package com.it.competition.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Competition {
@@ -46,6 +48,7 @@ public class Competition {
      *
      * @mbg.generated Fri Apr 26 18:38:50 CST 2019
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startTime;
 
     /**
@@ -55,6 +58,7 @@ public class Competition {
      *
      * @mbg.generated Fri Apr 26 18:38:50 CST 2019
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 
     /**
