@@ -82,7 +82,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">比赛信息</strong>
-                                <a href="${ctx}/organizer/create" class="btn btn-success btn-sm">添加</a>
                             </div>
                             <div class="table-stats order-table ov-h">
                                 <table class="table" style="margin-bottom: 0;">
@@ -94,7 +93,6 @@
                                         <th>开始时间</th>
                                         <th>结束时间</th>
                                         <th>组织者</th>
-                                        <th>参考资料</th>
                                         <th>比赛结果</th>
                                         <th>通知结果</th>
                                         <th>比赛状态</th>
@@ -110,17 +108,14 @@
                                             <td><f:formatDate value="${competition.startTime}" pattern="yyyy-MM-dd"/></td>
                                             <td><f:formatDate value="${competition.endTime}" pattern="yyyy-MM-dd"/></td>
                                             <td>${competition.organizerName}</td>
-                                            <td><a href="${ctx}/competition/downloadData?id=${competition.id}">${ff:substring(competition.referenceData, 0, 8)}...</a></td>
                                             <td>
-                                                <c:if test="${competition.result != null}">
-                                                    <a href="${ctx}/competition/downloadResult?id=${competition.id}">${ff:substring(competition.result, 0 , 8)}...</a>
-                                                </c:if>
+                                                <a href="${ctx}/admin/upload?id=${competition.id}" class="btn btn-info btn-sm">查看</a>
                                             </td>
                                             <td>
-                                                <c:if test="${competition.result != null && competition.sendResult}">
+                                                <c:if test="${competition.result != null && competition.result != '' && competition.sendResult}">
                                                     已发送
                                                 </c:if>
-                                                <c:if test="${competition.result != null && !competition.sendResult}">
+                                                <c:if test="${competition.result != null && competition.result != '' && !competition.sendResult}">
                                                     <a href="${ctx}/competition/sendResult?id=${competition.id}" class="btn btn-info btn-sm">发送</a>
                                                 </c:if>
                                             </td>

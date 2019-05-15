@@ -103,14 +103,11 @@
                                             <td><f:formatDate value="${competition.startTime}" pattern="yyyy-MM-dd"/></td>
                                             <td><f:formatDate value="${competition.endTime}" pattern="yyyy-MM-dd"/></td>
                                             <td>${competition.organizerName}</td>
-                                            <td><a href="${ctx}/competition/downloadData?id=${competition.id}">${ff:substring(competition.referenceData, 0, 8)}...</a></td>
                                             <td>
-                                                <c:if test="${competition.result == null}">
-                                                    <a href="${ctx}/organizer/upload?id=${competition.id}" class="btn btn-info btn-sm">上传</a>
-                                                </c:if>
-                                                <c:if test="${competition.result != null}">
-                                                    <a href="${ctx}/competition/downloadResult?id=${competition.id}">${ff:substring(competition.result, 0, 8)}...</a>
-                                                </c:if>
+                                                <a href="${ctx}/organizer/uploadData?id=${competition.id}" class="btn btn-info btn-sm">查看</a>
+                                            </td>
+                                            <td>
+                                                <a href="${ctx}/organizer/upload?id=${competition.id}" class="btn btn-info btn-sm">查看</a>
                                             </td>
                                             <td>${competition.state ? "已通过" : "待审核"}</td>
                                             <td>

@@ -20,7 +20,6 @@ public class IndexController {
 
     @GetMapping("")
     public String index(Model model) {
-        System.out.println(123);
         List<Competition> competitions = competitionService.getTrueCompetitions();
         model.addAttribute("competitions", competitions);
         return "index";

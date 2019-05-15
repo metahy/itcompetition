@@ -34,7 +34,7 @@
                     <li><a href="${ctx}/register/student">注册</a></li>
                 </c:if>
                 <c:if test="${sessionScope.id != null}">
-                    <li><a href="#">消息 <span class="badge">42</span></a></li>
+                    <li><a href="${ctx}/student/message">消息 <span class="badge">${sessionScope.msg}</span></a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">${sessionScope.studentName}同学<span class="caret"></span></a>
@@ -51,13 +51,19 @@
 </nav>
 <div class="container">
     <h2>${applyInfo.competitionTitle}</h2>
-    <form action="${ctx}/competition/upload" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="${applyInfo.id}">
-        <input type="hidden" name="competitionId" value="${applyInfo.competitionId}">
-        <input type="hidden" name="studentId" value="${sessionScope.id}">
-        <input type="file" name="result">
-        <button type="submit" class="btn btn-default">上传</button>
-    </form>
+    <c:if test="${applyInfo.result == null || applyInfo.result.equals('')}">
+        <span style="color: red; font-size: 13px;">上传作品仅一次机会，请谨慎</span>
+        <form action="${ctx}/competition/upload" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="${applyInfo.id}">
+            <input type="hidden" name="competitionId" value="${applyInfo.competitionId}">
+            <input type="hidden" name="studentId" value="${sessionScope.id}">
+            <input type="file" name="result">
+            <button type="submit" class="btn btn-default">上传</button>
+        </form>
+    </c:if>
+    <c:if test="${applyInfo.result != null}">
+        ${applyInfo.result}
+    </c:if>
 </div>
 <div style="text-align: center;">
     <span style="margin: auto;"><a href="${ctx}/login/organizer">比赛组织者登录</a> <a href="${ctx}/login/admin">管理人员登录</a></span>

@@ -87,10 +87,10 @@
                                         <th class="avatar">标题</th>
                                         <th>开始时间</th>
                                         <th>结束时间</th>
+                                        <th>比赛人数</th>
                                         <th>队名</th>
                                         <th>是否为组长</th>
                                         <th>报名状态</th>
-                                        <th>作品</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -101,17 +101,17 @@
                                             <td><a href="${ctx}/competition/info?id=${applyInfo.competitionId}">${applyInfo.competitionTitle}</a></td>
                                             <td><f:formatDate value="${applyInfo.competitionStartTime}" pattern="yyyy-MM-dd"/></td>
                                             <td><f:formatDate value="${applyInfo.competitionEndTime}" pattern="yyyy-MM-dd"/></td>
+                                            <td>${applyInfo.studentsNum}</td>
                                             <td>${applyInfo.teamName}</td>
-                                            <td>${applyInfo.teamLeader}</td>
+                                            <td>${applyInfo.teamLeader ? "是" : "否"}</td>
                                             <td>${applyInfo.state ? "已通过" : "待审核"}</td>
-                                            <td>${applyInfo.result == null ? "未上传" : "已上传"}</td>
                                             <td>
-                                                <c:if test="${applyInfo.teamLeader && applyInfo.result == null}">
+                                                <c:if test="${applyInfo.studentsNum > 1 && applyInfo.teamLeader && (applyInfo.result == null || applyInfo.result.equals(''))}">
                                                     <a href="${ctx}/competition/upload?id=${applyInfo.id}" class="btn btn-success btn-sm">上传作品</a>
                                                 </c:if>
-                                                <c:if test="${applyInfo.state}">
-                                                    <a href="${ctx}/competition/print?id=${applyInfo.id}" class="btn btn-success btn-sm">打印准考证</a>
-                                                </c:if>
+                                                <%--<c:if test="${applyInfo.state}">--%>
+                                                    <%--<a href="${ctx}/competition/print?id=${applyInfo.id}" class="btn btn-success btn-sm">打印准考证</a>--%>
+                                                <%--</c:if>--%>
                                                 <a href="${ctx}/organizer/delete?id=${applyInfo.id}" class="btn btn-danger btn-sm">退出</a>
                                             </td>
                                         </tr>

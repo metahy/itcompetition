@@ -61,10 +61,11 @@
         <p>开始时间：<fmt:formatDate value="${competition.startTime}" pattern="yyyy-MM-dd"/></p>
         <p>结束时间：<fmt:formatDate value="${competition.endTime}" pattern="yyyy-MM-dd"/></p>
         <p>组织者：${competition.organizerName}</p>
-        <p>参考资料：<a href="${ctx}/competition/downloadData?id=${competition.id}">${competition.referenceData}</a></p>
-        <c:if test="${competition.result != null}">
-            <p>成绩文件：<a href="${ctx}/competition/downloadResult?id=${competition.id}">${competition.result}</a></p>
-        </c:if>
+        <p>参考资料：
+            <c:forEach items="${competition.referenceData.split(',')}" var="item">
+                <a href="${ctx}/competition/downloadData?id=${item}">${item}</a>
+            </c:forEach>
+        </p>
     </div>
 </div>
 <div style="text-align: center;">

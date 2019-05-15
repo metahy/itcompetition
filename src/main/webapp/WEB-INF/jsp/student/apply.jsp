@@ -34,7 +34,7 @@
                     <li><a href="${ctx}/register/student">注册</a></li>
                 </c:if>
                 <c:if test="${sessionScope.id != null}">
-                    <li><a href="#">消息 <span class="badge">42</span></a></li>
+                    <li><a href="${ctx}/student/message">消息 <span class="badge">${sessionScope.msg}</span></a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">${sessionScope.studentName}同学<span class="caret"></span></a>
@@ -51,6 +51,7 @@
 </nav>
 <div class="container">
     <h2>${competition.title}</h2>
+    <span style="color: red;">开始比赛前三天截止报名，超时报名无效</span>
     <form action="${ctx}/competition/apply" method="post">
         <input type="hidden" name="competitionId" value="${competition.id}">
         <input type="hidden" name="studentsNum" value="${competition.studentsNum}">

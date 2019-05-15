@@ -101,13 +101,14 @@
                                                 <label for="cc-starttime" class="control-label mb-1">开始时间</label>
                                                 <input id="cc-starttime" name="startTime" type="text" class="form-control cc-name valid" value="<fmt:formatDate value="${competition.startTime}" pattern="yyyy-MM-dd"/>">
                                             </div>
+                                            <span style="color: red;">单人比赛请在比赛开始前两天发送准考证</span>
                                             <div class="form-group has-success">
                                                 <label for="cc-endtime" class="control-label mb-1">结束时间</label>
                                                 <input id="cc-endtime" name="endTime" type="text" class="form-control cc-name valid" value="<fmt:formatDate value='${competition.endTime}' pattern='yyyy-MM-dd'/>">
                                             </div>
                                             <div class="form-group has-success">
                                                 <label for="cc-ref" class="control-label mb-1">参考资料</label>
-                                                <input id="cc-ref" name="refFile" type="file" class="form-control cc-name valid">
+                                                <input id="cc-ref" name="refFile" multiple type="file" class="form-control cc-name valid">
                                             </div>
                                             <div>
                                                 <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">

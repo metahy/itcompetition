@@ -1,14 +1,8 @@
 package com.it.competition.controller;
 
 import com.alibaba.druid.util.StringUtils;
-import com.it.competition.domain.Applyinfo;
-import com.it.competition.domain.Competition;
-import com.it.competition.domain.Message;
-import com.it.competition.domain.Student;
-import com.it.competition.service.ApplyinfoService;
-import com.it.competition.service.CompetitionService;
-import com.it.competition.service.MessageService;
-import com.it.competition.service.StudentService;
+import com.it.competition.domain.*;
+import com.it.competition.service.*;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -28,15 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("competition")
@@ -50,9 +43,14 @@ public class CompetitionController {
     private ApplyinfoService applyinfoService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private ScoreService scoreService;
 
     @GetMapping("apply")
-    public String apply(String id, Model model) {
+    public String apply(String id, Model model, HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/";
+        }
         Competition competitionById = competitionService.getCompetitionById(Integer.valueOf(id));
         model.addAttribute("competition", competitionById);
         return "student/apply";
@@ -75,6 +73,7 @@ public class CompetitionController {
                     applyinfo.setCompetitionTitle(competition.getTitle());
                     applyinfo.setCompetitionStartTime(competition.getStartTime());
                     applyinfo.setCompetitionEndTime(competition.getEndTime());
+                    applyinfo.setStudentsNum(competition.getStudentsNum());
                     applyinfo.setStudentId(student.getId());
                     applyinfo.setStudentName(student.getStudentName());
                     applyinfo.setStudentNum(student.getStudentNum());
@@ -164,6 +163,14 @@ public class CompetitionController {
 
     @PostMapping("upload")
     public String upload(String id, @RequestParam(value = "result", required = false) MultipartFile result, HttpServletRequest request) throws IOException {
+        Applyinfo applyInfo = applyinfoService.getApplyInfo(Integer.valueOf(id));
+        // 早于开始日或晚于结束日不允许提交
+//        if (applyInfo.getCompetitionStartTime().after(new Date())) {
+//            return "redirect:/student/index";
+//        }
+        if (applyInfo.getCompetitionEndTime().before(new Date())) {
+            return "redirect:/student/index";
+        }
         String newFileName = null;
         if (!result.isEmpty()) {
             String path = request.getServletContext().getRealPath("/resource/uploadFile/");
@@ -176,7 +183,6 @@ public class CompetitionController {
                 result.transferTo(newFile);
             }
         }
-        Applyinfo applyInfo = applyinfoService.getApplyInfo(Integer.valueOf(id));
         Competition competitionById = competitionService.getCompetitionById(applyInfo.getCompetitionId());
         if (competitionById.getStudentsNum() > 1) {
             List<Applyinfo> applyinfos = applyinfoService.getApplyInfosByCompetitionId(applyInfo.getCompetitionId(), applyInfo.getTeamName());
@@ -184,25 +190,25 @@ public class CompetitionController {
                 applyinfo.setResult(newFileName);
             }
             applyinfoService.updateApplyInfos(applyinfos);
-        } else {
-            applyInfo.setResult(newFileName);
-            applyinfoService.updateApplyInfo(applyInfo);
         }
+//        else {
+//            applyInfo.setResult(newFileName);
+//            applyinfoService.updateApplyInfo(applyInfo);
+//        }
         return "redirect:/student/index";
     }
 
     @GetMapping("downloadData")
     public ResponseEntity<byte[]> downloadData(String id, HttpServletRequest request) throws IOException {
-        Competition competitionById = competitionService.getCompetitionById(Integer.valueOf(id));
         File fileDir = new File(request.getServletContext().getRealPath("/resource/uploadFile/"));
         if (!fileDir.exists()) {
             fileDir.mkdirs();
         }
-        File file = new File(fileDir + File.separator + competitionById.getReferenceData());
+        File file = new File(fileDir + File.separator + id);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition", "attchement;filename=" + competitionById.getReferenceData());
+        httpHeaders.add("Content-Disposition", "attchement;filename=" + id);
         HttpStatus statusCode = HttpStatus.OK;
-        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), httpHeaders, statusCode);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), httpHeaders, statusCode);
     }
 
     @GetMapping("downloadResult")
@@ -216,7 +222,44 @@ public class CompetitionController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Disposition", "attchement;filename=" + competitionById.getResult());
         HttpStatus statusCode = HttpStatus.OK;
-        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), httpHeaders, statusCode);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(file), httpHeaders, statusCode);
+    }
+
+    @GetMapping("checkResult")
+    public String checkResult(String id, HttpSession session, Model model) {
+        Competition competitionById = competitionService.getCompetitionById(Integer.valueOf(id));
+        model.addAttribute("competition", competitionById);
+        System.out.println(session.getAttribute("id"));
+        Score score = scoreService.getScoreByCompetitionIdAndStudentId(Integer.valueOf(id), (Integer) session.getAttribute("id"));
+        System.out.println(score);
+        if (score != null) {
+            model.addAttribute("score", score);
+            return "student/score";
+        }
+        return "redirect:/student/message";
+    }
+
+    @GetMapping("sendApplyInfo")
+    public String sendApplyInfo(String id) {
+        Competition competitionById = competitionService.getCompetitionById(Integer.valueOf(id));
+        List<Applyinfo> applyInfosByCompetitionId = applyinfoService.getApplyInfosByCompetitionId(Integer.valueOf(id));
+        for (Applyinfo applyinfo : applyInfosByCompetitionId) {
+            Message message = new Message();
+            message.setCompetitionId(competitionById.getId());
+            message.setCompetitionTitle(competitionById.getTitle());
+            message.setStudentId(applyinfo.getStudentId());
+            message.setStudentName(applyinfo.getStudentName());
+            message.setStudentNum(applyinfo.getStudentNum());
+            message.setTeamName(applyinfo.getTeamName());
+            String content = "亲爱的" + applyinfo.getStudentName() + "同学，你" +
+                    "参加的比赛 " + competitionById.getTitle() + " 已经发放准考证，请及时下载！";
+            message.setContent(content);
+            message.setState(false);
+            message.setLinkTo(applyinfo.getId().toString());
+            message.setType(1);
+            messageService.send(message);
+        }
+        return "redirect:/organizer/index";
     }
 
     @GetMapping("sendResult")
@@ -236,10 +279,11 @@ public class CompetitionController {
             if (competitionById.getStudentsNum() > 1) {
                 content.append("所在的队伍 ").append(applyinfo.getTeamName()).append(" ");
             }
-            content.append("参加的比赛 ").append(competitionById.getTitle()).append(" 已经公布成绩，请尽快下载查看！");
+            content.append("参加的比赛 ").append(competitionById.getTitle()).append(" 已经公布成绩，请前往查看！");
             message.setContent(content.toString());
             message.setState(false);
             message.setLinkTo(competitionById.getId().toString());
+            message.setType(0);
             messageService.send(message);
         }
         competitionById.setSendResult(true);

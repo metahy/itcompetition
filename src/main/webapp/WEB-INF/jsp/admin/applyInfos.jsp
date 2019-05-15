@@ -81,6 +81,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">比赛信息</strong>
+                                <a href="${ctx}/admin/exportApplyStudent?id=${competition.id}" class="btn btn-success btn-sm">导出报名学生名单</a>
                             </div>
                             <div class="table-stats order-table ov-h">
                                 <table class="table" style="margin-bottom: 0;">

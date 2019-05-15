@@ -81,7 +81,7 @@
                             </div>
                             <div style="padding-left: 20px;">
                                 <c:forEach items="${unReadmessages}" var="unReadmessage">
-                                    <p><a href="${ctx}/student/read?id=${unReadmessage.id}">关于 ${unReadmessage.competitionTitle} 比赛的结果通知</a></p>
+                                    <p><a href="${ctx}/student/read?id=${unReadmessage.id}">关于 ${unReadmessage.competitionTitle} 比赛的${unReadmessage.type == 0 ? "结果通知" : "准考证发放通知"}</a></p>
                                 </c:forEach>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                             </div>
                             <div style="padding-left: 20px;">
                                 <c:forEach items="${readmessages}" var="readmessage">
-                                    <p><a href="${ctx}/student/read?id=${readmessage.id}">关于 ${readmessage.competitionTitle} 比赛的结果通知</a></p>
+                                    <p><a href="${ctx}/student/read?id=${readmessage.id}">关于 ${readmessage.competitionTitle} 比赛的${readmessage.type == 0 ? "结果通知" : "准考证发放通知"}</a></p>
                                 </c:forEach>
                             </div>
                         </div>

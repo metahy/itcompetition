@@ -18,7 +18,9 @@
     <link rel="stylesheet" href="${ctx}/resource/admin/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="${ctx}/resource/admin/assets/css/style.css">
     <style>
-    @page { margin: 0; }
+        @page {
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -74,29 +76,63 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">比赛信息</strong>
+                                <strong class="card-title">成绩信息</strong>
                             </div>
-                            <div class="card-body">
-                                <div id="pay-invoice">
-                                    <div class="card-body">
-
-                                        <form action="${ctx}/organizer/upload" method="post" enctype="multipart/form-data">
-                                            <input type="hidden" name="role" value="organizer">
-                                            <input type="hidden" name="id" value="${competition.id}">
-                                            <div class="form-group">
-                                                <label for="cc-payment" class="control-label mb-1">成绩</label>
-                                                <input id="cc-payment" name="result" type="file" class="form-control">
-                                            </div>
-                                            <div>
-                                                <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                                                    <i class="fa fa-lock fa-lg"></i>&nbsp;
-                                                    <span id="payment-button-amount">上传</span>
-                                                </button>
-                                            </div>
-                                        </form>
+                            <c:if test="${scores.size() > 0}">
+                                <div class="table-stats order-table ov-h">
+                                    <table class="table" style="margin-bottom: 0;">
+                                        <thead>
+                                        <tr>
+                                            <th class="serial">#</th>
+                                            <th>姓名</th>
+                                            <th>学号</th>
+                                            <th>学院</th>
+                                            <th>分数</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach items="${scores}" var="score" varStatus="index">
+                                            <tr>
+                                                <td class="serial">${index.index + 1}</td>
+                                                <td>${score.studentName}</td>
+                                                <td>${score.studentNum}</td>
+                                                <td>${score.studentCollege}</td>
+                                                <td>${score.score}</td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </c:if>
+                            <c:if test="${scores.size() <= 0}">
+                                <div class="card-body">
+                                    <div id="pay-invoice">
+                                        <div class="card-body">
+                                            <h2>暂无</h2>
+                                            <br>
+                                            <form action="${ctx}/organizer/upload" method="post"
+                                                  enctype="multipart/form-data">
+                                                <input type="hidden" name="role" value="organizer">
+                                                <input type="hidden" name="id" value="${competition.id}">
+                                                <div class="form-group">
+                                                    <label for="cc-payment" class="control-label mb-1">成绩</label>
+                                                    <span style="color: red; font-size: 12px;">（成绩仅有一次上传机会，请谨慎）</span>
+                                                    <input id="cc-payment" name="result" type="file"
+                                                           class="form-control">
+                                                </div>
+                                                <div>
+                                                    <button id="payment-button" type="submit"
+                                                            class="btn btn-lg btn-info btn-block">
+                                                        <i class="fa fa-lock fa-lg"></i>&nbsp;
+                                                        <span id="payment-button-amount">上传</span>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>

@@ -78,7 +78,12 @@
                         <div class="card">
                             <div style="padding-left: 20px;">
                                 <p>${message.content}</p>
-                                <a href="${ctx}/competition/downloadResult?id=${message.linkTo}">成绩文件下载</a>
+                                <c:if test="${message.type == 0}">
+                                    <a href="${ctx}/competition/checkResult?id=${message.linkTo}">查看成绩</a>
+                                </c:if>
+                                <c:if test="${message.type == 1}">
+                                    <a href="${ctx}/competition/print?id=${message.linkTo}">准考证下载</a>
+                                </c:if>
                             </div>
                         </div>
                     </div>

@@ -82,7 +82,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">学生信息</strong>
-                                <button onclick="doPrint()" class="btn btn-success btn-sm">导出</button>
+                                <%--<button onclick="doPrint()" class="btn btn-success btn-sm">导出</button>--%>
+                                <a href="${ctx}/admin/exportStudent" class="btn btn-success btn-sm">导出学生名单</a>
                             </div>
                             <!--startprint-->
                             <div class="table-stats order-table ov-h">

@@ -74,7 +74,11 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">比赛信息</strong>
+                                <strong class="card-title">比赛报名信息</strong>
+                                <a href="${ctx}/admin/exportApplyStudent?id=${competition.id}" class="btn btn-success btn-sm">导出报名学生名单</a>
+                                <c:if test="${competition.studentsNum == 1}">
+                                    <a href="${ctx}/competition/sendApplyInfo?id=${competition.id}" class="btn btn-success btn-sm">发送准考证</a>
+                                </c:if>
                             </div>
                             <div class="table-stats order-table ov-h">
                                 <table class="table" style="margin-bottom: 0;">
@@ -91,6 +95,7 @@
                                         <th>队名</th>
                                         <th>是否为组长</th>
                                         <th>报名状态</th>
+                                        <th>作品</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -106,8 +111,16 @@
                                             <td>${applyInfo.studentCollege}</td>
                                             <td>${applyInfo.studentPhone}</td>
                                             <td>${applyInfo.teamName}</td>
-                                            <td>${applyInfo.teamLeader}</td>
+                                            <td>${applyInfo.teamLeader ? "是" : "否"}</td>
                                             <td>${applyInfo.state ? "已通过" : "待审核"}</td>
+                                            <td>
+                                                <c:if test="${applyInfo.result != null && !applyInfo.result.equals('')}">
+                                                    <a href="${ctx}/competition/downloadResult?id=${applyInfo.result}">${applyInfo.result}</a>
+                                                </c:if>
+                                                <c:if test="${applyInfo.result == null || applyInfo.result.equals('')}">
+                                                    未上传
+                                                </c:if>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
